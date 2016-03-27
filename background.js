@@ -10,6 +10,13 @@ var merge = function (obj1, obj2) {
 };
 
 /*
+ * Returns the index the last item in the given array
+ */
+var lastIndex = function (arr) {
+  return arr.length - 1;
+};
+
+/*
  * Only queries for tabs in current window
  */
 var queryTabs = function (query, callback) {
@@ -28,7 +35,7 @@ var getTabsAnd = function (callback) {
       var activeTab = _tabs [0];
       if (activeTab) {
         queryTabs ({}, function (tabs) {
-          callback (activeTab, tabs, tabs.length - 1);
+          callback (activeTab, tabs, lastIndex (tabs));
         });
       } else {
         callback ();
