@@ -32,6 +32,22 @@
                 "mac"    : "MacCtrl+L"
             },
             "description": "Right of the current tab"
+        },
+
+        "previous-tab": {
+            "suggested_key": {
+                "default": "Alt+J",
+                "mac"    : "Command+J"
+            },
+            "description": "Previous active tab"
+        },
+
+        "next-tab": {
+            "suggested_key": {
+                "default": "Alt+Shift+J",
+                "mac"    : "Command+Shift+J"
+            },
+            "description": "Next active tab"
         }
     }
 }
