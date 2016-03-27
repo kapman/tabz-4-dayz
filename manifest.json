@@ -1,0 +1,37 @@
+{
+    "manifest_version": 2,
+    "name": "tabz 4 dayz",
+    "version": "1",
+
+    "description": "Keyboard shortcuts for managing your tabs",
+
+    "background": {
+        "persistent": false,
+        "scripts": ["background.js"]
+    },
+
+    "author": "Aamir Kapasi",
+
+    "permissions": [
+        "activeTab",
+        "tabs"
+    ],
+
+    "commands": {
+        "left-tab": {
+            "suggested_key": {
+                "default": "Ctrl+J",
+                "mac"    : "MacCtrl+J"
+            },
+            "description": "Left of the current tab"
+        },
+
+        "right-tab": {
+            "suggested_key": {
+                "default": "Ctrl+L",
+                "mac"    : "MacCtrl+L"
+            },
+            "description": "Right of the current tab"
+        }
+    }
+}
