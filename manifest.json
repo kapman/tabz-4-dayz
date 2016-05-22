@@ -6,8 +6,8 @@
     "description": "Keyboard shortcuts for managing your tabs",
 
     "background": {
-        "persistent": false,
-        "scripts": ["background.js"]
+        "persistent": true,
+        "scripts": ["build/background.js"]
     },
 
     "author": "Aamir Kapasi",
