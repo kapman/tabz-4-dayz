@@ -1,0 +1,10 @@
+{
+    "author": "Aamir Kapasi",
+    "name": "tabz-4-dayz",
+    "description": "A chrome extension to manage your tabs",
+    "version": "0.1.0",
+    "scripts": {
+        "start": "webpack --watch --progress --color"
+    },
+    "dependencies": {}
+}
