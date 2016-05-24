@@ -1,0 +1,123 @@
+var utils = require ("./utils.js");
+var tabs = require ("./tab-utils.js");
+var lastIndex = utils.lastIndex;
+
+var log = function () {
+  tabs.getCurrent (function (a, _tabs) {
+    console.log (tabHistory.map (function (tabId, i) {
+      var str = tabId + utils.findObjectByKey (_tabs, tabId, "id").title.split (" ") [0];
+      if (currentIndex === i) {
+        str = "--" + str + "--"
+      }
+      return str;
+    }));
+  });
+};
+
+/*
+ * Maximum number of tab visits that are recorded
+ */
+var HISTORY_LIMIT = 10;
+/*
+ * Array of tab ids in order of last visited
+ */
+var tabHistory = [];
+/*
+ * Current position in tabHistory
+ */
+var currentIndex = -1;
+/*
+ * Counter for the number of times the onActivated event should be ignored
+ * because the event is being triggered by the extension itself.
+ * Using a counter instead of a boolean flag because of race conditions when
+ * continuously pressing and holding shortcuts.
+ */
+var ignoreCount = 0;
+
+// Add active tab as first in tabHistory
+tabs.getCurrent (function (activeTab) {
+  add (activeTab.id);
+});
+
+// Add tabs to history whenever they are activated
+chrome.tabs.onActivated.addListener (function (data) {
+  if (ignoreCount > 0) {
+    ignoreCount--;
+    return;
+  }
+
+  add (data.tabId);
+});
+
+// Remove all occurences of a tab in the history when it is removed
+chrome.tabs.onRemoved.addListener (function (removedTabId, data) {
+  var newLength, oldLength = tabHistory.length;
+  var currentTabRemoved = removedTabId === tabHistory [currentIndex];
+
+  tabHistory = tabHistory.filter (function (tabId) {
+    return tabId !== removedTabId;
+  }).filter (function (tabId, i, tabHistory) {
+    // Make sure there are no contiguous tabs in history
+    return tabHistory [i + 1] !== tabId;
+  });
+
+  newLength = tabHistory.length;
+  currentIndex -= oldLength - newLength;
+
+  if (currentTabRemoved) {
+    ignoreCount++;
+  }
+});
+
+/*
+ * Adds a tab to the history array. If the history array is full it removes
+ * the oldest tab.
+ */
+var add = function (tabId) {
+  var action;
+  if (currentIndex === lastIndex (tabHistory)) {
+    // If a user visits a tab when they're at the end of their tab history
+    tabHistory.push (tabId);
+    action = "push: ";
+  } else {
+    // If a user visits a tab when they're in the middle of cycling through
+    // their tab history
+    tabHistory.splice (currentIndex + 1, tabHistory.length, tabId);
+    action = "splice: ";
+  }
+
+  if (tabHistory.length >= HISTORY_LIMIT) {
+    tabHistory.shift ();
+  } else {
+    // Tabs are only added when they are active so just increase the index
+    currentIndex++
+  }
+};
+
+/*
+ * Acivates previous tab in tab visit history
+ */
+var activatePrevTab = function () {
+  if (currentIndex !== 0) {
+    ignoreCount++;
+    currentIndex--;
+    tabs.activate (tabHistory [currentIndex]);
+  }
+};
+
+/*
+ * Activate next tab in tab visit history
+ */
+var activateNextTab = function () {
+  if (currentIndex !== lastIndex (tabHistory)) {
+    ignoreCount++;
+    currentIndex++;
+    tabs.activate (tabHistory [currentIndex]);
+  }
+};
+
+
+module.exports = {
+  next: activateNextTab,
+  previous: activatePrevTab
+};
