@@ -27,30 +27,46 @@ var tabHistory = [];
  */
 var currentIndex = -1;
 /*
- * Counter for the number of times the onActivated event should be ignored
- * because the event is being triggered by the extension itself.
+ * Counter for the number of times the call to the add function should be ignored
+ * because it is being called due to an event that is being triggered by the
+ * extension itself (like onFocusChanged when navigating history).
  * Using a counter instead of a boolean flag because of race conditions when
  * continuously pressing and holding shortcuts.
  */
 var ignoreCount = 0;
 
-// Add active tab as first in tabHistory
-tabs.getCurrent (function (activeTab) {
-  add (activeTab.id);
-});
-
-// Add tabs to history whenever they are activated
-chrome.tabs.onActivated.addListener (function (data) {
+/*
+ * Adds a tab to the history array. If the history array is full it removes
+ * the oldest tab.
+ */
+var add = function (tabId) {
   if (ignoreCount > 0) {
     ignoreCount--;
     return;
   }
 
-  add (data.tabId);
-});
+  if (currentIndex === lastIndex (tabHistory)) {
+    // If a user visits a tab when they're at the end of their tab history
+    if (tabHistory [lastIndex (tabHistory)] === tabId) {
+      return;
+    }
 
-// Remove all occurences of a tab in the history when it is removed
-chrome.tabs.onRemoved.addListener (function (removedTabId, data) {
+    tabHistory.push (tabId);
+  } else {
+    // If a user visits a tab when they're in the middle of cycling through
+    // their tab history
+    tabHistory.splice (currentIndex + 1, tabHistory.length, tabId);
+  }
+
+  if (tabHistory.length >= HISTORY_LIMIT) {
+    tabHistory.shift ();
+  } else {
+    // Tabs are only added when they are active so just increase the index
+    currentIndex++
+  }
+};
+
+var remove = function (removedTabId) {
   var newLength, oldLength = tabHistory.length;
   var currentTabRemoved = removedTabId === tabHistory [currentIndex];
 
@@ -63,35 +79,6 @@ chrome.tabs.onRemoved.addListener (function (removedTabId, data) {
 
   newLength = tabHistory.length;
   currentIndex -= oldLength - newLength;
-
-  if (currentTabRemoved) {
-    ignoreCount++;
-  }
-});
-
-/*
- * Adds a tab to the history array. If the history array is full it removes
- * the oldest tab.
- */
-var add = function (tabId) {
-  var action;
-  if (currentIndex === lastIndex (tabHistory)) {
-    // If a user visits a tab when they're at the end of their tab history
-    tabHistory.push (tabId);
-    action = "push: ";
-  } else {
-    // If a user visits a tab when they're in the middle of cycling through
-    // their tab history
-    tabHistory.splice (currentIndex + 1, tabHistory.length, tabId);
-    action = "splice: ";
-  }
-
-  if (tabHistory.length >= HISTORY_LIMIT) {
-    tabHistory.shift ();
-  } else {
-    // Tabs are only added when they are active so just increase the index
-    currentIndex++
-  }
 };
 
 /*
@@ -116,6 +103,31 @@ var activateNextTab = function () {
   }
 };
 
+// Add active tab as first in tabHistory
+tabs.getCurrent (function (tab) {
+  add (tab.id);
+});
+
+// Add tabs to history whenever they are activated
+chrome.tabs.onActivated.addListener (function (data) {
+  add (data.tabId);
+});
+
+// Remove all occurences of a tab in the history when it is removed
+chrome.tabs.onRemoved.addListener (function (removedTabId) {
+  remove (removedTabId);
+});
+
+
+// Add tab to visit history when switching windows
+// tabs.onActivated does not fire when toggling through windows
+chrome.windows.onFocusChanged.addListener (function () {
+  tabs.getCurrent (function (activeTab) {
+    if (activeTab) {
+      add (activeTab.id);
+    }
+  });
+});
 
 module.exports = {
   next: activateNextTab,

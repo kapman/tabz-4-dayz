@@ -2,7 +2,10 @@
  * Activates the tab that matches the given id
  */
 var activateTab = function (id) {
-  chrome.tabs.update (id, { active: true });
+  chrome.tabs.get (id, function (tab) {
+    chrome.windows.update (tab.windowId, { focused: true });
+    chrome.tabs.update (id, { active: true });
+  });
 };
 
 /*
