@@ -3,9 +3,13 @@ var tabs = require ("./tab-utils.js");
 var lastIndex = utils.lastIndex;
 
 var log = function () {
-  tabs.getCurrent (function (a, _tabs) {
+  chrome.tabs.query ({}, function (_tabs) {
     console.log (tabHistory.map (function (tabId, i) {
-      var str = tabId + utils.findObjectByKey (_tabs, tabId, "id").title.split (" ") [0];
+      var t = utils.findObjectByKey (_tabs, tabId, "id");
+      if (!t) {
+        console.log ("Missing tabId", tabId);
+      }
+      var str = tabId + (t ? t.title.split (" ") [0] : "MISSING");
       if (currentIndex === i) {
         str = "--" + str + "--"
       }
@@ -118,6 +122,12 @@ chrome.tabs.onRemoved.addListener (function (removedTabId) {
   remove (removedTabId);
 });
 
+// Chrome tries to speed things up by prerendering a tab that it thinks the user
+// will visit. When it is correct it replaces the tab with the prerendered one.
+// This keeps tabHistory updated when this happens.
+chrome.tabs.onReplaced.addListener (function (newTabId, replacedTabId) {
+   remove (replacedTabId);
+});
 
 // Add tab to visit history when switching windows
 // tabs.onActivated does not fire when toggling through windows
