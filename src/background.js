@@ -3,16 +3,16 @@ var tabHistory = require ("./tab-history.js");
 
 chrome.commands.onCommand.addListener (function (command) {
   switch (command) {
-    case "left-tab":
+    case "activate-left":
       tabs.activateLeft ();
       break;
-    case "right-tab":
+    case "activate-right":
       tabs.activateRight ();
       break;
-    case "previous-tab":
+    case "activate-previous":
       tabHistory.previous ();
       break;
-    case "next-tab":
+    case "activate-next":
       tabHistory.next ();
       break;
     default:

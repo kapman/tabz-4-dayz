@@ -18,36 +18,36 @@
     ],
 
     "commands": {
-        "left-tab": {
+        "activate-left": {
             "suggested_key": {
                 "default": "Ctrl+J",
                 "mac"    : "MacCtrl+J"
             },
-            "description": "Left of the current tab"
+            "description": "Activate left tab"
         },
 
-        "right-tab": {
+        "activate-right": {
             "suggested_key": {
                 "default": "Ctrl+L",
                 "mac"    : "MacCtrl+L"
             },
-            "description": "Right of the current tab"
+            "description": "Activate right tab"
         },
 
-        "previous-tab": {
+        "activate-previous": {
             "suggested_key": {
                 "default": "Alt+J",
                 "mac"    : "Command+J"
             },
-            "description": "Previous active tab"
+            "description": "Activate previous tab"
         },
 
-        "next-tab": {
+        "activate-next": {
             "suggested_key": {
                 "default": "Alt+Shift+J",
                 "mac"    : "Command+Shift+J"
             },
-            "description": "Next active tab"
+            "description": "Activate next tab"
         }
     }
 }
