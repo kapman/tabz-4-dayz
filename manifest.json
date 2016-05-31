@@ -48,6 +48,22 @@
                 "mac"    : "Command+Shift+J"
             },
             "description": "Activate next tab"
+        },
+
+        "move-right": {
+            "description": "Move tab right (Ctrl+Shift+L)"
+        },
+
+        "move-left": {
+            "description": "Move tab left (Ctrl+Shift+J)"
+        },
+
+        "move-end": {
+            "description": "Move tab to the end (Ctrl+Shift+M)"
+        },
+
+        "move-start": {
+            "description": "Move tab to the start (Ctrl+Shift+I)"
         }
     }
 }
