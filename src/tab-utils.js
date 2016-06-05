@@ -29,25 +29,28 @@ var getCurrentTabs = function (callback) {
 };
 
 /*
- * Activates the tab at the index returned by the provided fn.
- * fn is executed with the active tab's index and the number of tabs as args.
+ * Creates a function that will activate the tab at the index returned by the
+ * provided fn.
+ * nextIndexFn will receive the active tab's index and the number of tabs as args.
  */
-var activateNextTab = function (getNextIndex) {
-  getCurrentTabs (function (activeTab, tabsList) {
-    var nextIndex, tabCount = tabsList.length;
+var activateNextTab = function (nextIndexFn) {
+  return function () {
+    getCurrentTabs (function (activeTab, _tabs) {
+      var nextIndex, tabCount = _tabs.length;
 
-    if (activeTab && tabCount > 1) {
-      nextIndex = getNextIndex (activeTab.index, tabsList.length);
-      activateTab (tabsList [nextIndex].id);
-    }
-  });
+      if (activeTab && tabCount > 1) {
+        nextIndex = nextIndexFn (activeTab.index, _tabs.length);
+        activateTab (_tabs [nextIndex].id);
+      }
+    });
+  };
 };
 
 /*
  * Activate the tab on the right of the active tab
  * Activate first tab if active tab is the last tab
  */
-var activateRightTab = activateNextTab.bind (null, function (activeIndex, tabCount) {
+var activateRightTab = activateNextTab (function (activeIndex, tabCount) {
   return activeIndex === (tabCount - 1) ? 0 : activeIndex + 1;
 });
 
@@ -55,7 +58,7 @@ var activateRightTab = activateNextTab.bind (null, function (activeIndex, tabCou
  * Activate the tab on the left of the active tab
  * Activate last tab if active tab is the first tab
  */
-var activateLeftTab = activateNextTab.bind (null, function (activeIndex, tabCount) {
+var activateLeftTab = activateNextTab (function (activeIndex, tabCount) {
   return activeIndex === 0 ? (tabCount - 1) : activeIndex - 1;
 });
 
