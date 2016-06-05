@@ -64,6 +64,10 @@
 
         "move-start": {
             "description": "Move tab to the start (Ctrl+Shift+I)"
+        },
+
+        "pin-unpin": {
+            "description": "Pin or unpin tab (Ctrl+Shift+P)"
         }
     }
 }

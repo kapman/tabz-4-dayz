@@ -59,10 +59,21 @@ var activateLeftTab = activateNextTab.bind (null, function (activeIndex, tabCoun
   return activeIndex === 0 ? (tabCount - 1) : activeIndex - 1;
 });
 
+/*
+ * Toggles the pinned state of the active tab
+ */
+var togglePin = function () {
+  queryTabs ({active: true}, function (_tabs) {
+    var activeTab = _tabs [0];
+    chrome.tabs.update (activeTab.id, {pinned: !activeTab.pinned});
+  });
+};
+
 module.exports = {
   activate: activateTab,
   query: queryTabs,
   getCurrent: getCurrentTabs,
   activateRight: activateRightTab,
-  activateLeft: activateLeftTab
+  activateLeft: activateLeftTab,
+  togglePin: togglePin
 };

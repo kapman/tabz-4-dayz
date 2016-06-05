@@ -28,6 +28,9 @@ chrome.commands.onCommand.addListener (function (command) {
     case "move-start":
       tabMove.start ();
       break;
+    case "pin-unpin":
+      tabs.togglePin ();
+      break;
     default:
       console.log ("INVALID COMMAND");
   };
