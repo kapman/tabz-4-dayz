@@ -6,7 +6,7 @@ A chrome extension to manage your tabs with keyboard shortcuts!
 - Toggle back & forth between last visited tabs using `cmd/alt + j` & `cmd/alt + shift + j`
 - Pin/unpin tabs
 - Reorder tabs (even if they're pinned!)
-- Move tab to the next window
+- Move tab to the next window or its own window
 
 ## Todo
 - Suspend tab

@@ -103,6 +103,21 @@ var toggleWindow = function () {
   });
 };
 
+/*
+ * Moves the current tab to its own window
+ */
+var newWindow = function () {
+  getCurrentTabs (function (activeTab, _tabs) {
+    if (_tabs.length === 1) {
+      return;
+    }
+
+    chrome.windows.create ({
+      tabId: activeTab.id
+    });
+  });
+};
+
 module.exports = {
   activate: activateTab,
   query: queryTabs,
@@ -110,5 +125,6 @@ module.exports = {
   activateRight: activateRightTab,
   activateLeft: activateLeftTab,
   togglePin: togglePin,
-  toggleWindow: toggleWindow
+  toggleWindow: toggleWindow,
+  newWindow: newWindow
 };

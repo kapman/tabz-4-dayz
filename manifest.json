@@ -72,6 +72,10 @@
 
         "next-win": {
             "description": "Move tab to the next window (Ctrl+Shift+W)"
+        },
+
+        "new-win": {
+            "description": "Move tab to its own window (Ctrl+Shift+Q)"
         }
     }
 }

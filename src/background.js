@@ -34,6 +34,9 @@ chrome.commands.onCommand.addListener (function (command) {
     case "next-win":
       tabs.toggleWindow ();
       break;
+    case "new-win":
+      tabs.newWindow ();
+      break;
     default:
       console.log ("INVALID COMMAND");
   };
