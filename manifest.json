@@ -68,6 +68,10 @@
 
         "pin-unpin": {
             "description": "Pin or unpin tab (Ctrl+Shift+P)"
+        },
+
+        "next-win": {
+            "description": "Move tab to the next window (Ctrl+Shift+W)"
         }
     }
 }

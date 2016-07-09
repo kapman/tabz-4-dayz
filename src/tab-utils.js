@@ -66,9 +66,40 @@ var activateLeftTab = activateNextTab (function (activeIndex, tabCount) {
  * Toggles the pinned state of the active tab
  */
 var togglePin = function () {
-  queryTabs ({active: true}, function (_tabs) {
-    var activeTab = _tabs [0];
+  getCurrentTabs (function (activeTab, _tabs) {
     chrome.tabs.update (activeTab.id, {pinned: !activeTab.pinned});
+  })
+};
+
+
+/*
+ * Moves the current tab to the next normal window
+ */
+var toggleWindow = function () {
+  chrome.windows.getAll ({
+    windowTypes: ["normal"]
+  }, function (windows) {
+    var nextWinId, activeWinIndex;
+    if (windows.length === 1) {
+      return;
+    }
+
+    activeWinIndex = windows.findIndex (win => win.focused);
+
+    if (activeWinIndex === (windows.length - 1)) {
+      nextWinId = windows [0].id;
+    } else {
+      nextWinId = windows [activeWinIndex + 1].id;
+    }
+
+    getCurrentTabs (function (activeTab) {
+      chrome.tabs.move (activeTab.id, {
+        windowId: nextWinId,
+        index: -1
+      }, function () {
+        activateTab (activeTab.id);
+      });
+    });
   });
 };
 
@@ -78,5 +109,6 @@ module.exports = {
   getCurrent: getCurrentTabs,
   activateRight: activateRightTab,
   activateLeft: activateLeftTab,
-  togglePin: togglePin
+  togglePin: togglePin,
+  toggleWindow: toggleWindow
 };

@@ -31,6 +31,9 @@ chrome.commands.onCommand.addListener (function (command) {
     case "pin-unpin":
       tabs.togglePin ();
       break;
+    case "next-win":
+      tabs.toggleWindow ();
+      break;
     default:
       console.log ("INVALID COMMAND");
   };
